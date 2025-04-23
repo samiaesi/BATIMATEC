@@ -1,0 +1,74 @@
+<div class="container">
+  <mat-toolbar color="primary" [routerLink]="['/']">
+    <img src="./hps_icon.png" alt="Logo" class="logo">
+    <span class="title">Liste des utilisateurs</span>
+  </mat-toolbar>
+  <!-- Affichage du nombre des utilisateurs -->
+  <div class="user-count">
+    <h2>Nombre total d'utilisateurs : {{ totalUsers }}</h2>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel *ngFor="let user of users" [style.backgroundColor]="getRegionColor(user.city)">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{ user.firstName }} {{ user.lastName }}
+        </mat-panel-title>
+        <mat-panel-description>
+          {{ user.email }} — {{ user.clientType }}<br>
+          📞 {{ user.phone}} 📍 {{ user.city }}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <div class="user-details"   >
+        <table mat-table [dataSource]="user.quotes" class="mat-elevation-z2" multiTemplateDataRows >
+
+          <!-- Système -->
+          <ng-container matColumnDef="quoteSystem">
+            <th mat-header-cell *matHeaderCellDef>Système</th>
+            <td mat-cell *matCellDef="let quote">{{ quote.quoteSystem.label }}</td>
+          </ng-container>
+
+          <!-- RAL -->
+          <ng-container matColumnDef="ral">
+            <th mat-header-cell *matHeaderCellDef>RAL</th>
+            <td mat-cell *matCellDef="let quote">{{ quote.ral }}</td>
+          </ng-container>
+
+          <!-- Largeur -->
+          <ng-container matColumnDef="width">
+            <th mat-header-cell *matHeaderCellDef>Largeur (cm)</th>
+            <td mat-cell *matCellDef="let quote">{{ quote.width }}</td>
+          </ng-container>
+
+          <!-- Hauteur -->
+          <ng-container matColumnDef="height">
+            <th mat-header-cell *matHeaderCellDef>Hauteur (cm)</th>
+            <td mat-cell *matCellDef="let quote">{{ quote.height }}</td>
+          </ng-container>
+
+          <!-- Statut -->
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let quote">
+              {{ quote.hasSent ? 'Envoyé' : 'Non envoyé' }}
+            </td>
+          </ng-container>
+
+          <!-- Action -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>Action</th>
+            <td mat-cell *matCellDef="let quote">
+              <button mat-raised-button color="accent" (click)="sendQuote(quote)">
+                {{ quote.hasSent ? 'Annuler envoi' : 'Envoyer le devis' }}
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+    </mat-expansion-panel>
+
+  </mat-accordion>
+</div>

@@ -1,0 +1,112 @@
+<div class="container">
+  <!-- Logo en haut -->
+  <mat-toolbar color="primary">
+    <img src="./hps_icon.png" alt="Logo" class="logo">
+    <span class="title">Batimatec 2025</span>
+    <button mat-raised-button color="accent" [routerLink]="['/dashboard']">Voir les utilisateurs</button>
+    <mat-form-field appearance="outline">
+      <mat-label>Sélectionner une date</mat-label>
+      <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </mat-toolbar>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <!-- Infos personnelles -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Nom</mat-label>
+      <input matInput formControlName="firstName" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Prénom</mat-label>
+      <input matInput formControlName="lastName" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Téléphone</mat-label>
+      <input matInput formControlName="phone" required>
+    </mat-form-field>
+
+    <!-- Ville avec autocomplete -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Ville</mat-label>
+      <input matInput [matAutocomplete]="auto" formControlName="city" required>
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let city of filteredCities | async" [value]="city">
+          {{ city }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Fonction</mat-label>
+      <input matInput formControlName="function" required>
+    </mat-form-field>
+
+    <!-- Type de client -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Type de client</mat-label>
+      <mat-select formControlName="clientType" required>
+        <mat-option value="menuiserie">Menuiserie</mat-option>
+        <mat-option value="architecte">Architecte</mat-option>
+        <mat-option value="distributeur">Distributeur</mat-option>
+        <mat-option value="visiteur">Visiteur</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Devis demandé -->
+    <mat-checkbox formControlName="hasQuote">
+      Avez-vous demandé un devis ?
+    </mat-checkbox>
+
+    <div *ngIf="form.get('hasQuote')?.value">
+      <div formArrayName="quotes">
+        <!-- Ajout dynamique de devis -->
+        <div *ngFor="let quote of quotes.controls; let i = index" [formGroupName]="i">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Système</mat-label>
+            <mat-select formControlName="quoteSystem" required>
+              <mat-option *ngFor="let sys of systemOptions" [value]="sys">{{ sys.label }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>RAL</mat-label>
+            <input matInput formControlName="ral" required>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Largeur</mat-label>
+            <input matInput formControlName="width" required>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Hauteur</mat-label>
+            <input matInput formControlName="height" required>
+          </mat-form-field>
+
+
+        </div>
+      </div>
+
+      <button mat-raised-button (click)="addQuote()" color="accent">Ajouter un devis</button>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Commentaires</mat-label>
+      <textarea matInput formControlName="comments"></textarea>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+      Soumettre
+    </button>
+  </form>
+</div>
+
